@@ -1,0 +1,239 @@
+<?php
+
+namespace Rami\FerientabelleBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * User
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class User
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="privatekey", type="string", length=255)
+     */
+    private $privatekey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="publickey", type="string", length=255)
+     */
+    private $publickey;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Timeframe", mappedBy="user")
+     */
+    protected $timeframes;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinTable(name="friendships",
+     *      joinColumns={@ORM\JoinColumn(name="user", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="friend", referencedColumnName="id", unique=true)}
+     *      )
+     **/
+    private $friends;
+
+    public function __construct()
+    {
+        $this->timeframes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->friends = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set privatekey
+     *
+     * @param string $privatekey
+     * @return User
+     */
+    public function setPrivatekey($privatekey)
+    {
+        $this->privatekey = $privatekey;
+    
+        return $this;
+    }
+
+    /**
+     * Get privatekey
+     *
+     * @return string 
+     */
+    public function getPrivatekey()
+    {
+        return $this->privatekey;
+    }
+
+    /**
+     * Set publickey
+     *
+     * @param string $publickey
+     * @return User
+     */
+    public function setPublickey($publickey)
+    {
+        $this->publickey = $publickey;
+    
+        return $this;
+    }
+
+    /**
+     * Get publickey
+     *
+     * @return string 
+     */
+    public function getPublickey()
+    {
+        return $this->publickey;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Add timeframes
+     *
+     * @param \Rami\FerientabelleBundle\Entity\Timeframe $timeframes
+     * @return User
+     */
+    public function addTimeframe(\Rami\FerientabelleBundle\Entity\Timeframe $timeframes)
+    {
+        $this->timeframes[] = $timeframes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove timeframes
+     *
+     * @param \Rami\FerientabelleBundle\Entity\Timeframe $timeframes
+     */
+    public function removeTimeframe(\Rami\FerientabelleBundle\Entity\Timeframe $timeframes)
+    {
+        $this->timeframes->removeElement($timeframes);
+    }
+
+    /**
+     * Get timeframes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTimeframes()
+    {
+        return $this->timeframes;
+    }
+
+    /**
+     * Add friends
+     *
+     * @param \Rami\FerientabelleBundle\Entity\User $friends
+     * @return User
+     */
+    public function addFriend(\Rami\FerientabelleBundle\Entity\User $friends)
+    {
+        $this->friends[] = $friends;
+    
+        return $this;
+    }
+
+    /**
+     * Remove friends
+     *
+     * @param \Rami\FerientabelleBundle\Entity\User $friends
+     */
+    public function removeFriend(\Rami\FerientabelleBundle\Entity\User $friends)
+    {
+        $this->friends->removeElement($friends);
+    }
+
+    /**
+     * Get friends
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFriends()
+    {
+        return $this->friends;
+    }
+}

@@ -1,0 +1,48 @@
+{% extends "RamiFerientabelleBundle:Default:base.html.twig" %}
+{%block body%}
+
+{% if is_granted('ROLE_USER') %}
+	<h1>Willkommen zurück, {{ app.user.name }}</h1>
+	<p class="text-center">
+		<a href="{{ path('rami_ferientabelle_account', {'id':app.user.id, 'public':app.user.publickey, 'private':app.user.privatekey}) }}" class="btn btn-primary btn-large">Zu deiner Tabelle</a>	
+	</p>
+	<div class="row-fluid">
+		<div class="span2">
+		</div>
+		<div class="span8">
+			<div class="flex-video widescreen">
+				<iframe src="https://www.youtube-nocookie.com/embed/jA6ogdfXaMI?rel=0" frameborder="0" allowfullscreen style="max-height: 720px"></iframe>
+			</div>
+		</div>
+		<div class="span2">
+		</div>
+	</div>
+{% else %}
+	<h1>Die Ferientabelle</h1>
+	<div class="row-fluid">
+		<div class="span2">
+		</div>
+		<div class="span8">
+			<div class="flex-video widescreen">
+				<iframe src="https://www.youtube-nocookie.com/embed/jA6ogdfXaMI?rel=0" frameborder="0" allowfullscreen style="max-height: 720px"></iframe>
+			</div>
+		</div>
+		<div class="span2">
+		</div>
+	</div>
+	<div class="row">
+		<div class="span6 text-center">
+			<h2>Schon dabei?</h2>
+			<p>Dann hast du damals einen privaten Link gekriegt, den musst du einfach oben in die Adressleiste eingeben. Wenn du den nicht findest, wird's schwer...<br /><small>Wenn du damals deine E-Mail-Adresse konfiguriert hast, können wir ihn dir prinzipiell zusenden – diese Funktion ist aber noch nicht fertig ;-)</small></p>
+		
+		</div>
+		<div class="span6 text-center">
+			<h2>Neu hier?</h2>
+			<form action="{{ path('rami_ferientabelle_start') }}" method="post">
+				<input type="text" placeholder="Name" value="" name="name" /><br />
+				<input type="submit" class="btn btn-primary" value="Mitmachen" />
+			</form>
+		</div>
+	</div>
+{% endif %}
+{%endblock%}

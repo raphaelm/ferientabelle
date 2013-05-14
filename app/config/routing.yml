@@ -1,0 +1,4 @@
+rami_ferientabelle:
+    resource: "@RamiFerientabelleBundle/Resources/config/routing.yml"
+    prefix:   /
+

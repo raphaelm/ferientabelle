@@ -1,0 +1,174 @@
+{% extends "RamiFerientabelleBundle:Default:base.html.twig" %}
+{%block title%}
+Deine Ferientabelle
+{%endblock%}
+{%block body%}
+
+
+<h1>Deine Ferientabelle</h1>
+
+<form class="form-horizontal">
+  <div class="control-group">
+    <label class="control-label" for="name">Dein Name</label>
+    <div class="controls">
+		<div class="input-prepend">
+		  <span class="add-on"><i class="icon-user"></i></span>
+		  <input type="text" id="name" value="{{ user.name }}" disabled="disabled" />
+		</div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="publicURL">Öffentliche Adresse</label>
+    <div class="controls">
+		<div class="input-prepend">
+		  <span class="add-on"><i class="icon-globe"></i></span>
+		  <input type="text" id="publicURL" value="{{ url('rami_ferientabelle_profile', {'id':user.id, 'public':user.publickey}) }}">
+		</div>
+      <span class="help-inline">Diese Adresse solltest du an alle deine Freunde weitergeben!</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="privateURL">Private Adresse</label>
+    <div class="controls">
+		<div class="input-prepend">
+		  <span class="add-on"><i class="icon-lock"></i></span>
+		  <input type="text" id="privateURL" value="{{ url('rami_ferientabelle_account', {'id':user.id, 'public':user.publickey, 'private':user.privatekey}) }}">
+		</div>
+      <span class="help-inline">Diese Adresse solltest <strong>gut aufschreiben aber nicht weitergeben</strong>! Setze am besten ein Lesezeichen auf diese Seite.</span>
+    </div>
+  </div>
+</form>
+
+<ul class="nav nav-tabs tabbing">
+  <li class="active"><a href="#friends" data-toggle="tab">Freunde</a></li>
+  <li><a href="#frames" data-toggle="tab">Deine Zeitangaben</a></li>
+  <li><a href="#settings" data-toggle="tab">Einstellungen</a></li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="friends">
+		<h2>Die Tabelle mit dir und deinen Freunden</h2>
+		<div class="therow">
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						{% for m, l in table.mlen %}
+							{% if m == '…' %}
+								<th class="year"></th>
+							{% else %}
+								<th class="year" colspan="{{ l[0] }}">{{ l[1]|format_date('MMMM yyyy', 'de')|raw }}</th>
+							{% endif %}
+						{% endfor %}
+					</tr>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						{% for d in table.dates %}
+							{% if d == '…' %}
+								<th>…</th>
+							{% else %}
+								<th>{{ d|format_date('EEE\'<br />\'d.\'', 'de')|raw }}</th>
+							{% endif %}
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for id, u in table.friends %}
+						<tr>
+							<th>{{ u.name }}</th>
+							<th><a href="{{ url('rami_ferientabelle_profile', {'id':u.id, 'public':u.publickey}) }}" target="_blank" class="btn btn-link" data-toggle="tooltip" title="Öffentliche Adresse"><i class="icon-globe"></i></a></th>
+							<th>{% if u.id != user.id %}<a href="{{ path('rami_ferientabelle_account_deletefriend', {'id':user.id, 'public':user.publickey, 'private':user.privatekey, 'friend': u.id}) }}" class="btn btn-link confirmdeletefriendship" data-toggle="tooltip" title="Freundschaft entfernen"><i class="icon-trash"></i></a>{% else %}<a href="#frames" class="gotoframes btn btn-link" data-toggle="tooltip" title="Zeitangaben bearbeiten"><i class="icon-edit"></i></a>{% endif %}</th>
+							{% set skip = 0 %}
+							{% for d in table.dates %}
+								{% if d == '…' %}
+									<td>…</td>
+								{% else %}
+									{% if table.avail[id][d] is defined %}
+										<td class="avail{{ table.avail[id][d][0] }}" colspan="{{ table.avail[id][d][1] }}"{% if table.avail[id][d][1] > 2 and table.avail[id][d][2]|length < 20 %}>{{ table.avail[id][d][2] }}{%else%} data-toggle="tooltip" title="{{ table.avail[id][d][2] }}">{% endif %}
+										</td>
+										{% set skip = table.avail[id][d][1] - 1 %}
+									{% else %}
+										{% if skip > 0 %}
+											{% set skip = skip -1 %}
+										{% else %}
+											<td></td>
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		
+		<form action="{{ path('rami_ferientabelle_account_addfriend', {'id':user.id, 'public':user.publickey, 'private':user.privatekey, 'form':'addfriend'}) }}" class="form-horizontal" method="post">
+		<h2>Freund hinzufügen</h2>
+		{% if errmsgf %}
+		<div class="alert alert-error">{{ errmsgf }}</div>
+		{% endif %}
+		{{ form_widget(addfriend, {'form_type' : 'horizontal'}) }}
+		  <div class="control-group">
+			<div class="controls">
+				<input type="submit" value="Hinzufügen" class="btn btn-primary" />
+			</div>
+		  </div>
+		</form>
+  </div>
+  <div class="tab-pane" id="frames">
+		<form class="form-horizontal" method="post" action="{{ path('rami_ferientabelle_account', {'id':user.id, 'public':user.publickey, 'private':user.privatekey, 'form':'addtimeframe'}) }}#frames">
+		<h2>Eigene Zeitangabe hinzufügen</h2>
+		{{ form_errors(ntff) }}
+		{% if errmsg %}
+		<div class="alert alert-error">{{ errmsg }}</div>
+		{% endif %}
+		<p>Vom {{ form_widget(ntff.from, {'form_type': 'inline'}) }} bis zum {{ form_widget(ntff.to, {'form_type': 'inline'}) }} {{ form_widget(ntff.availability, {'form_type': 'inline'}) }}.</p>
+		<p>Zusätzlicher Kommentar (optional, z.B. Urlaubsort): {{ form_widget(ntff.comment, {'form_type': 'inline'}) }}</p>
+		<p><input type="submit" value="Speichern" class="btn btn-primary" /></p>
+		{{ form_rest(ntff) }}
+		</form>
+		{% if user.timeframes|length > 0 %}
+		<h2>Deine Zeitangaben</h2>
+		<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Von</th>
+				<th>Bis</th>
+				<th>Verfügbarkeit</th>
+				<th>Kommentar</th>
+				<th></th>
+			</tr>
+		</thead>
+		{% for tf in user.timeframes %}
+		<tr {% if tf.id == new %}class="success"{% endif %}>
+			<td>{{ tf.from|format_date }}</td>
+			<td>{{ tf.to|format_date }}</td>
+			<td>{% if tf.availability == 0 %}unklar{% elseif tf.availability == -1 %}verplant{% else %}frei{% endif %}</td>
+			<td>{{ tf.comment }}</td>
+			<td><a href="{{ path('rami_ferientabelle_account_timeframe_delete', {'id':user.id, 'public':user.publickey, 'private':user.privatekey, 'tf' : tf.id}) }}" class="btn btn-danger"><i class="icon-white icon-trash"></i></a></td>
+		</tr>
+		{% endfor %}
+		</table>
+		{% endif %}
+  </div>
+  <div class="tab-pane" id="settings">
+	<form class="form-horizontal" method="post" action="{{ path('rami_ferientabelle_account', {'id':user.id, 'public':user.publickey, 'private':user.privatekey, 'form':'settings'}) }}#settings">
+		<h2>Einstellungen</h2>
+		{% if settingssaved %}
+		<div class="alert alert-success">Die Änderungen wurden gespeichert.</div>
+		{% endif %}
+		{{ form_widget(settings, {'form_type': 'horizontal'}) }}
+		  <div class="control-group">
+			<div class="controls">
+				<input type="submit" value="Speichern" class="btn btn-primary" />
+			</div>
+		  </div>
+	</form>
+  </div>
+</div>
+
+{%endblock%}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{%block title%}Ferientabelle{%endblock%}</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" />
+    {% stylesheets '@RamiFerientabelleBundle/Resources/public/css/*' %}
+		 <link rel="stylesheet" href="{{ asset_url }}" />
+	{% endstylesheets %}
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="{{ path('rami_ferientabelle_homepage') }}">Ferientabelle</a>
+			{% if is_granted('ROLE_USER') and app.user %}
+				<p class="navbar-text pull-right">
+					<a href="{{ path('rami_ferientabelle_account', {'id':app.user.id, 'public':app.user.publickey, 'private':app.user.privatekey}) }}">Angemeldet als {{ app.user.name }}</a>
+				</p>
+			{% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      {%block body%}
+      <h1>Die Ferientabelle</h1>
+      {%endblock%}
+    
+	  <hr>
+
+	  <footer>
+		<p>Ein Projekt von <a href="http://www.raphaelmichel.de" target="_blank">Raphael Michel</a> &middot; Probleme? mail@raphaelmichel.de</p>
+	  </footer>
+    </div> <!-- /container -->
+    
+    
+    
+    <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
+    {% javascripts '@RamiFerientabelleBundle/Resources/public/js/*' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+  </body>
+</html>

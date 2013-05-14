@@ -1,0 +1,35 @@
+rami_ferientabelle_homepage:
+    pattern:  /
+    defaults: { _controller: RamiFerientabelleBundle:Default:index }
+
+rami_ferientabelle_start:
+    pattern:  /start
+    defaults: { _controller: RamiFerientabelleBundle:Default:start }
+
+rami_ferientabelle_stats:
+    pattern:  /stats
+    defaults: { _controller: RamiFerientabelleBundle:Stats:stats }
+    
+rami_ferientabelle_profile:
+    pattern:  /{id}/{public}
+    defaults: { _controller: RamiFerientabelleBundle:Default:profile }
+    
+rami_ferientabelle_profile_addfriend:
+    pattern:  /add/{id}/{public}
+    defaults: { _controller: RamiFerientabelleBundle:Default:addFriendDirect }
+    
+rami_ferientabelle_account:
+    pattern:  /{id}/{public}/{private}
+    defaults: { _controller: RamiFerientabelleBundle:Default:account }
+    
+rami_ferientabelle_account_timeframe_delete:
+    pattern:  /{id}/{public}/{private}/delete/{tf}
+    defaults: { _controller: RamiFerientabelleBundle:Default:timeframeDelete }
+    
+rami_ferientabelle_account_addfriend:
+    pattern:  /{id}/{public}/{private}/addfriend
+    defaults: { _controller: RamiFerientabelleBundle:Default:addFriend }
+    
+rami_ferientabelle_account_deletefriend:
+    pattern:  /{id}/{public}/{private}/deletefriend/{friend}
+    defaults: { _controller: RamiFerientabelleBundle:Default:deleteFriend }

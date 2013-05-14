@@ -1,0 +1,39 @@
+{% extends "RamiFerientabelleBundle:Default:base.html.twig" %}
+{%block body%}
+
+<h1>Statistik</h1>
+
+<div class="row-fluid">
+	<div class="span3 well">
+		<h2>{{ users_total }}</h2>
+		<p>Benutzer insgesamt</p>
+	</div>
+	<div class="span3 well">
+		<h2>{{ tf_total }}</h2>
+		<p>Zeitfenster insgesamt</p>
+	</div>
+	<div class="span3 well">
+		<h2>{{ tf_avg_l|number_format(2) }}</h2>
+		<p>Durschschnittliche Zeitfensterlänge</p>
+	</div>
+	<div class="span3 well">
+		<h2>{{ tf_max|date('d.m.Y') }}</h2>
+		<p>Weiteste Vorausplanung</p>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span3 well">
+		<h2>{{ tf_l_1 }}</h2>
+		<p>Tage verfügbar gesamt</p>
+	</div>
+	<div class="span3 well">
+		<h2>{{ tf_l_m1 }}</h2>
+		<p>Tage verplant gesamt</p>
+	</div>
+	<div class="span3 well">
+		<h2>{{ tf_l_0 }}</h2>
+		<p>Tage unklar gesamt</p>
+	</div>
+</div>
+	
+{%endblock%}
