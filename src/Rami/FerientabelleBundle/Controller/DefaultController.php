@@ -56,12 +56,15 @@ class DefaultController extends Controller
 				if ($nttf->isValid()) {
 					$em = $this->getDoctrine()->getManager();
 					
-					foreach($user->getTimeframes() as $tf) {
-						if( ! ( $ntf->getFrom() > $tf->getTo() || $ntf->getTo() < $tf->getFrom() ) ) {
-							$errmsg = 'Dieses Zeitfenster überlappt sich mit einem anderen. Lösche das andere zuerst.';
-						}
-						if( $ntf->getFrom() > $ntf->getTo() ) {
-							$errmsg = 'Das Startdatum sollte vor dem Enddatum liegen ;-)';
+					if( $ntf->getFrom() > $ntf->getTo() ) {
+						$errmsg = 'Das Startdatum sollte vor dem Enddatum liegen ;-)';
+					} else if( $ntf->getFrom()->diff($ntf->getTo())->days > 120 ) {
+						$errmsg = 'Dieser Zeitraum ist zu lange ;-) Wenn du keine Ferien hast, erstelle einfach keinen Zeitraum für diese Zeit.';
+					} else {
+						foreach($user->getTimeframes() as $tf) {
+							if( ! ( $ntf->getFrom() > $tf->getTo() || $ntf->getTo() < $tf->getFrom() ) ) {
+								$errmsg = 'Dieses Zeitfenster überlappt sich mit einem anderen. Lösche das andere zuerst.';
+							}
 						}
 					}
 					if(!$errmsg) {
